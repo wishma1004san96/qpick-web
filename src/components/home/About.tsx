@@ -1,124 +1,134 @@
+"use client";
+
 import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
 const featureCards = [
   {
-    title: "Professional Chauffeurs",
-    description:
-      "Experienced local drivers focused on safety, courtesy, and reliable service across Sri Lanka.",
+    title: "Trusted & Safe",
+    description: "Professional licensed chauffeurs with high safety standards.",
   },
   {
-    title: "Curated Travel Experiences",
-    description:
-      "Flexible rides, destination trips, and tour-ready journeys shaped around real traveler needs.",
-  },
-  {
-    title: "Responsive Booking Support",
-    description:
-      "Fast communication, trusted coordination, and support that helps guests book with confidence.",
-  },
-  {
-    title: "Premium Fleet Standards",
-    description:
-      "Well-kept vehicles and a polished service experience designed for comfort from pickup to drop-off.",
+    title: "Expert Team",
+    description: "Experienced local travel professionals providing reliable service.",
   },
 ];
 
 export default function About() {
   return (
-    <section
-      id="about"
-      className="relative overflow-hidden bg-[#07111f] py-20 text-white sm:py-24"
-    >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(56,189,248,0.16),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.12),transparent_30%)]" />
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-2 lg:items-start lg:gap-14">
-          <div className="max-w-2xl">
-            <span className="inline-flex rounded-full border border-sky-400/20 bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-sky-100 backdrop-blur-xl sm:text-sm">
-              About Q Pick by ATCCA
-            </span>
+    <section id="about" className="relative overflow-hidden bg-white py-20 sm:py-24 xl:py-[120px]">
+      <div className="mx-auto w-full max-w-[1400px] px-6 sm:px-10 lg:px-16 xl:px-20">
+        <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.02fr)] lg:gap-16 xl:gap-20">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.35 }}
+            transition={{ duration: 0.72 }}
+            className="relative mx-auto w-full max-w-[620px]"
+          >
+            <div className="pointer-events-none absolute left-1/2 top-1/2 h-[72%] w-[72%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.28)_0%,rgba(56,189,248,0.12)_45%,rgba(255,255,255,0)_74%)] blur-3xl" />
 
-            <h2 className="mt-5 text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-5xl">
-              A premium travel partner built for comfort, trust, and confidence.
-            </h2>
-
-            <p className="mt-6 text-base leading-7 text-slate-300 sm:text-lg">
-              Q Pick is an ATCCA travel and chauffeur platform created to make Sri Lanka travel
-              simple, polished, and reliable. We combine verified drivers, quality vehicles, and
-              thoughtful trip planning so every booking feels professional from the first click.
-            </p>
-
-            <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              <article className="rounded-3xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-black/10 backdrop-blur-xl">
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-100">
-                  Our Mission
-                </p>
-                <p className="mt-3 text-sm leading-7 text-slate-300 sm:text-base">
-                  To deliver dependable airport transfers, private rides, and curated tours with
-                  a premium service standard that makes travelers feel safe, supported, and well
-                  looked after.
-                </p>
-              </article>
-
-              <article className="rounded-3xl border border-white/10 bg-slate-950/40 p-6 shadow-xl shadow-black/10 backdrop-blur-xl">
-                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-sky-100">
-                  Our Vision
-                </p>
-                <p className="mt-3 text-sm leading-7 text-slate-300 sm:text-base">
-                  To become Sri Lanka's most trusted premium ride and travel brand, known for
-                  service quality, responsive support, and memorable journeys across the island.
-                </p>
-              </article>
-            </div>
-          </div>
-
-          <div className="grid gap-4">
-            <div className="overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 p-3 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:p-4">
-              <div className="relative aspect-[16/10] overflow-hidden rounded-[1.5rem] bg-slate-900/80">
-                <Image
-                  src="/images/hero/wda11.webp"
-                  alt="Q Pick chauffeur travel experience"
-                  fill
-                  sizes="(min-width: 1024px) 560px, 100vw"
-                  className="object-cover object-center"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#07111f]/90 via-transparent to-transparent" />
-
-                <div className="absolute left-4 top-4 rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 backdrop-blur-xl">
-                  <p className="text-xs uppercase tracking-[0.22em] text-slate-400">Built on trust</p>
-                  <p className="mt-1 text-base font-semibold text-white">ATCCA travel excellence</p>
-                </div>
-
-                <div className="absolute bottom-4 left-4 right-4 grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 backdrop-blur-xl">
-                    <p className="text-2xl font-semibold text-white">2019</p>
-                    <p className="mt-1 text-xs uppercase tracking-[0.24em] text-slate-400">Established</p>
-                  </div>
-
-                  <div className="rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 backdrop-blur-xl">
-                    <p className="text-2xl font-semibold text-white">24/7</p>
-                    <p className="mt-1 text-xs uppercase tracking-[0.24em] text-slate-400">Support</p>
-                  </div>
-
-                  <div className="rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 backdrop-blur-xl">
-                    <p className="text-2xl font-semibold text-white">100+</p>
-                    <p className="mt-1 text-xs uppercase tracking-[0.24em] text-slate-400">Trip options</p>
-                  </div>
+            <div className="relative overflow-hidden rounded-[2.2rem] border border-slate-200 bg-white p-6 shadow-[0_36px_90px_rgba(15,23,42,0.16)] sm:p-8">
+              <div className="relative aspect-[11/10] overflow-hidden rounded-[1.7rem] bg-gradient-to-br from-[#eef5ff] via-[#f8fbff] to-[#e8f1ff]">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(56,189,248,0.2),transparent_40%),radial-gradient(circle_at_80%_80%,rgba(37,99,235,0.16),transparent_45%)]" />
+                <div className="relative flex h-full items-center justify-center p-10 sm:p-12">
+                  <Image
+                    src="/images/logo/qpick-logo.webp"
+                    alt="QPick Tours logo"
+                    fill
+                    sizes="(min-width: 1280px) 520px, (min-width: 768px) 46vw, 92vw"
+                    className="object-contain p-[clamp(2rem,5vw,4rem)]"
+                    priority
+                  />
                 </div>
               </div>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              {featureCards.map((card) => (
-                <article
+            <motion.div
+              initial={{ opacity: 0, y: -12 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, amount: 0.6 }}
+              animate={{ y: [0, -8, 0] }}
+              transition={{ y: { duration: 4.2, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }, opacity: { duration: 0.6, delay: 0.2 } }}
+              className="absolute -left-3 -top-4 rounded-2xl border border-white/60 bg-white/68 px-4 py-3 shadow-[0_16px_40px_rgba(15,23,42,0.14)] backdrop-blur-xl sm:-left-5 sm:px-5"
+            >
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Certified</p>
+              <p className="mt-1 text-sm font-semibold text-slate-900 sm:text-base">✔ Government Registered</p>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, amount: 0.6 }}
+              animate={{ y: [0, 8, 0] }}
+              transition={{ y: { duration: 4.6, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }, opacity: { duration: 0.6, delay: 0.28 } }}
+              className="absolute -bottom-4 -right-3 rounded-2xl border border-white/60 bg-white/68 px-4 py-3 shadow-[0_16px_40px_rgba(15,23,42,0.14)] backdrop-blur-xl sm:-right-5 sm:px-5"
+            >
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Our Journey</p>
+              <p className="mt-1 text-sm font-semibold text-slate-900 sm:text-base">⭐ 5+ Years of Excellence</p>
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 48 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.35 }}
+            transition={{ duration: 0.75 }}
+            className="max-w-[680px]"
+          >
+            <span className="inline-flex rounded-full border border-sky-200 bg-white px-4 py-2 text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-sky-700 shadow-[0_10px_24px_rgba(14,116,144,0.12)] sm:text-xs">
+              About QPick Tours
+            </span>
+
+            <h2 className="mt-6 text-[clamp(2rem,4.2vw,4.1rem)] font-black leading-[0.94] tracking-[0.01em] text-slate-900">
+              Sri Lanka&apos;s Premier
+              <br />
+              <span className="bg-gradient-to-r from-sky-500 via-blue-600 to-blue-700 bg-clip-text text-transparent">
+                Chauffeur
+              </span>{" "}
+              Experience.
+            </h2>
+
+            <p className="mt-7 max-w-[62ch] text-[clamp(1rem,1.06vw,1.18rem)] leading-[1.8] text-slate-600">
+              Established in 2019, QPick Tours delivers trusted chauffeur-driven travel experiences across Sri Lanka. Our experienced drivers, premium vehicles, and personalized service ensure every journey is comfortable, safe, and unforgettable.
+            </p>
+
+            <div className="mt-9 grid gap-4 sm:grid-cols-2">
+              {featureCards.map((card, index) => (
+                <motion.article
                   key={card.title}
-                  className="rounded-3xl border border-white/10 bg-slate-950/40 p-5 shadow-xl shadow-black/10 backdrop-blur-xl"
+                  initial={{ opacity: 0, y: 18 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.35 }}
+                  transition={{ duration: 0.55, delay: 0.18 + index * 0.14 }}
+                  className="group rounded-[1.6rem] border border-slate-200 bg-white p-6 shadow-[0_18px_46px_rgba(15,23,42,0.1)] transition duration-300 hover:-translate-y-1.5 hover:shadow-[0_22px_54px_rgba(15,23,42,0.16)]"
                 >
-                  <h3 className="text-lg font-semibold text-white">{card.title}</h3>
-                  <p className="mt-3 text-sm leading-7 text-slate-300">{card.description}</p>
-                </article>
+                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 text-lg text-white shadow-[0_10px_26px_rgba(37,99,235,0.32)]">
+                    ✔
+                  </div>
+                  <h3 className="mt-4 text-lg font-semibold text-slate-900">{card.title}</h3>
+                  <p className="mt-2 text-sm leading-7 text-slate-600">{card.description}</p>
+                </motion.article>
               ))}
             </div>
-          </div>
+
+            <div className="mt-10 flex flex-wrap items-center gap-4">
+              <Link
+                href="#contact"
+                className="inline-flex items-center justify-center rounded-full bg-blue-600 px-10 py-4 text-base font-semibold text-white shadow-[0_18px_48px_rgba(37,99,235,0.34)] transition duration-300 hover:-translate-y-0.5 hover:bg-blue-500"
+              >
+                Book Your Tour
+              </Link>
+
+              <Link
+                href="#contact"
+                className="inline-flex items-center justify-center rounded-full border border-slate-300 bg-white px-8 py-4 text-sm font-semibold text-slate-800 transition duration-300 hover:border-slate-400 hover:bg-slate-50"
+              >
+                Contact Us
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>

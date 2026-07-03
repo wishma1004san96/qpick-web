@@ -24,3 +24,32 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ── Hero cinematic background zoom ── */
+@keyframes heroBgZoom {
+  from { transform: scale(1.0); }
+  to   { transform: scale(1.09); }
+}
+
+.hero-bg-zoom {
+  animation: heroBgZoom 22s ease-in-out infinite alternate;
+}
+
+/* ── Hero card floating animations ── */
+@keyframes cardFloatA {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-11px); }
+}
+
+@keyframes cardFloatB {
+  0%, 100% { transform: translateY(-7px); }
+  50%      { transform: translateY(6px); }
+}
+
+.hero-card-float-a {
+  animation: cardFloatA 5.2s ease-in-out infinite;
+}
+
+.hero-card-float-b {
+  animation: cardFloatB 5.2s ease-in-out 0.9s infinite;
+}
