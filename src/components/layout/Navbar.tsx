@@ -31,7 +31,7 @@ export default function Navbar() {
             {contactItems.map((item) => (
               <a key={item.label} href={item.href} className="inline-flex items-center gap-2 transition hover:text-slate-900">
                 <span className="flex h-4 w-4 items-center justify-center rounded-full border border-blue-500/20 text-[10px] font-semibold text-blue-600">
-                  {item.href.startsWith("mailto") ? "✉" : "⌖"}
+                  {item.href.startsWith("mailto") ? "Γ£ë" : "Γîû"}
                 </span>
                 <span>{item.label}</span>
               </a>

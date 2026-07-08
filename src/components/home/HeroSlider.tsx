@@ -3,56 +3,33 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { heroSlides } from "@/data/heroSlides";
 
-const transitionMs = 700;
+const transitionMs = 600;
 const autoSlideMs = 6000;
 
-/**
- * Slot-based card positions. When activeIndex changes, each slide is assigned
- * a slot via (slideIdx - activeIndex + total) % total. Because inline styles
- * change and transition-all is applied, cards physically move between positions.
- *
- * Slot 0 = front large card (visible)
- * Slot 1 = middle card    (visible)
- * Slot 2 = back card      (visible, slightly faded)
- * Slot 3 = off-screen right, opacity 0  (smooth enter/exit zone)
- * Slot 4+ = far off-screen, no transition (instant reset)
- */
-type SlotConfig = {
-  left: string;
-  top: string;
-  zIndex: number;
-  opacity: number;
-  width: string;
-  height: string;
-};
-
-const SLOT_CONFIG: SlotConfig[] = [
-  // 0: front active card
-  { left: "0%",   top: "0px",  zIndex: 40, opacity: 1,    width: "clamp(13rem,14.5vw,17rem)",  height: "clamp(300px,32vw,520px)" },
-  // 1: middle card — slightly lower, narrower
-  { left: "47%",  top: "56px", zIndex: 30, opacity: 1,    width: "clamp(9.5rem,10.5vw,12rem)", height: "clamp(195px,21vw,350px)" },
-  // 2: back card — partially off right edge
-  { left: "73%",  top: "38px", zIndex: 20, opacity: 0.9,  width: "clamp(8.5rem,9.5vw,11rem)",  height: "clamp(180px,19vw,325px)" },
-  // 3: just off-screen right — enter/exit zone
-  { left: "102%", top: "38px", zIndex: 10, opacity: 0,    width: "clamp(8.5rem,9.5vw,11rem)",  height: "clamp(180px,19vw,325px)" },
+const stackCardLayouts = [
+  "left-0 top-4 z-40 h-[380px] w-[74vw] max-w-[23rem] sm:h-[460px] sm:w-[21.5rem] lg:h-[560px] lg:w-[25rem] xl:w-[27rem]",
+  "left-[63%] top-12 z-30 h-[250px] w-[8rem] -translate-x-1/2 sm:left-[66%] sm:h-[302px] sm:w-[9rem] lg:left-[65%] lg:top-12 lg:h-[358px] lg:w-[10.5rem] xl:left-[67%]",
+  "left-[77%] top-20 z-20 h-[224px] w-[6.75rem] -translate-x-1/2 sm:left-[79%] sm:h-[270px] sm:w-[7.5rem] lg:left-[80%] lg:top-20 lg:h-[316px] lg:w-[8.5rem] xl:left-[81.5%]",
+  "left-[89%] top-28 z-10 h-[196px] w-[5.75rem] -translate-x-1/2 opacity-90 sm:left-[91%] sm:h-[236px] sm:w-[6.5rem] lg:left-[92.5%] lg:top-28 lg:h-[280px] lg:w-[7.5rem] xl:left-[94%]",
 ];
-
-const HIDDEN_SLOT: SlotConfig = {
-  left: "130%", top: "38px", zIndex: 0, opacity: 0,
-  width: "clamp(8.5rem,9.5vw,11rem)", height: "clamp(180px,19vw,325px)",
-};
 
 export default function HeroSlider() {
   const slides = heroSlides;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isVideoReady, setIsVideoReady] = useState(false);
   const transitionTimeoutRef = useRef<number | null>(null);
   const autoSlideIntervalRef = useRef<number | null>(null);
 
   const activeSlide = slides[activeIndex];
   const totalSlides = slides.length;
+  const stackedSlides = Array.from({ length: Math.min(4, totalSlides) }, (_, offset) => ({
+    slide: slides[(activeIndex + offset) % totalSlides],
+    offset,
+  }));
 
   const beginTransition = () => {
     setIsTransitioning(true);
@@ -131,165 +108,129 @@ export default function HeroSlider() {
     };
   }, [totalSlides]);
 
-
-
   return (
     <section
       id="home"
       aria-label="Hero destinations slider"
-      className="relative isolate overflow-hidden bg-[#07111f] text-white h-[calc(100vh-104px)] sm:h-[calc(100vh-112px)] lg:h-[calc(100vh-118px)]"
+      className="relative isolate min-h-screen overflow-hidden bg-slate-950 text-white"
     >
-      {/* ── Background video with cinematic zoom ── */}
       <video
-        className="absolute inset-0 h-full w-full object-cover hero-bg-zoom"
         autoPlay
         muted
         loop
         playsInline
         preload="metadata"
-        poster={slides[0]?.image}
         aria-hidden="true"
+        onLoadedData={() => setIsVideoReady(true)}
+        className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-out ${
+          isVideoReady ? "opacity-100" : "opacity-0"
+        }`}
       >
         <source src="/videos/hero-background-15s.mp4" type="video/mp4" />
       </video>
 
-      {/* ── Overlays ── */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[rgba(5,8,15,0.93)] via-[rgba(5,8,15,0.58)] to-[rgba(5,8,15,0.06)]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#030b16]/22 via-transparent to-[#030b16]/74" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(5,15,30,0.30),rgba(5,15,30,0.15),rgba(5,15,30,0.05))]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.12),transparent_30%),radial-gradient(circle_at_right,rgba(14,165,233,0.08),transparent_26%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.028)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.028)_1px,transparent_1px)] bg-[size:80px_80px] opacity-20" />
 
-      {/*
-        max-w-[100rem] = 1600px cap — prevents content from stretching on ultra-wides.
-        Outer px scales with breakpoints for breathing room on every resolution.
-      */}
-      <div className="relative mx-auto flex h-full w-full max-w-[100rem] items-center px-6 pb-10 pt-8 sm:px-10 sm:pt-10 lg:px-16 lg:pb-8 lg:pt-10 xl:px-20 2xl:px-28">
-        <div className="grid w-full items-center gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(430px,0.86fr)] lg:gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(510px,0.86fr)] xl:gap-8 2xl:grid-cols-[minmax(0,1fr)_minmax(590px,0.86fr)] 2xl:gap-10">
-          {/* ── LEFT CONTENT ──
-              Nav dots are a flex sibling (not absolute) so they never clip off-screen.
-              Left indent scales with breakpoints.
-          ── */}
-          <div className="flex items-start gap-5 transition-transform lg:translate-y-[clamp(1.9rem,2.6vw,2.5rem)] lg:gap-7 lg:pl-8 lg:-translate-x-[clamp(2.5rem,3.2vw,3.75rem)] xl:pl-12 2xl:pl-16">
-
-            {/* Vertical nav dots + counter — desktop only */}
-            <div className="hidden flex-shrink-0 flex-col items-center pt-7 lg:flex">
-              <div
-                className="relative flex flex-col items-center justify-between"
-                style={{ height: "clamp(240px, 22vh, 290px)" }}
-              >
-                <span
-                  className="absolute left-1/2 top-[5px] w-px -translate-x-1/2 bg-white/20"
-                  style={{ height: "calc(100% - 10px)" }}
-                  aria-hidden="true"
-                />
-                {slides.map((slide, index) => (
-                  <span
-                    key={slide.id}
-                    className={`relative z-10 h-2.5 w-2.5 flex-shrink-0 rounded-full border border-white/20 transition duration-500 ${
-                      index === activeIndex ? "scale-110 bg-white" : "bg-slate-300/40"
-                    }`}
-                    aria-hidden="true"
-                  />
-                ))}
-              </div>
-              <p className="mt-7 text-[0.68rem] font-bold tracking-[0.3em] text-white/65 [writing-mode:vertical-rl]">
-                {String(activeIndex + 1).padStart(2, "0")} / {String(totalSlides).padStart(2, "0")}
-              </p>
+      <div className="relative mx-auto flex min-h-screen max-w-7xl items-center px-4 py-24 sm:px-6 lg:px-8 lg:py-28">
+        <div className="grid w-full gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(420px,0.98fr)] lg:items-center lg:gap-10 xl:gap-14">
+          <div
+            className={`relative z-10 max-w-2xl transition-all duration-500 ease-out ${
+              isTransitioning ? "translate-y-2 opacity-0" : "translate-y-0 opacity-100"
+            }`}
+          >
+            <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-slate-100 shadow-lg shadow-sky-500/10 backdrop-blur-xl sm:text-sm">
+              <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-emerald-100">
+                Premium island journeys
+              </span>
+              <span className="hidden sm:inline">Trusted by travelers</span>
             </div>
 
-            {/* Text content */}
-            <div
-              className={`transition-all duration-[920ms] ease-out ${
-                isTransitioning ? "translate-y-5 opacity-0" : "translate-y-0 opacity-100"
-              }`}
-            >
-              {/* Mobile-only counter */}
-              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-sky-100/90 lg:hidden">
-                {String(activeIndex + 1).padStart(2, "0")} / {String(totalSlides).padStart(2, "0")}
-              </p>
-
-              {/* Heading: clamp scales fluidly from 1024px to 2560px */}
-              <h1
-                className="mt-4 font-black uppercase leading-[0.88] tracking-[0.01em] text-white"
-                style={{ fontSize: "clamp(3rem, 5.8vw, 6.75rem)" }}
-              >
-                {activeSlide.title}
-              </h1>
-
-              {/* Paragraph */}
-              <p
-                className="mt-7 leading-[1.74] text-slate-100/84"
-                style={{
-                  fontSize: "clamp(0.95rem, 1.05vw, 1.22rem)",
-                  maxWidth: "clamp(22rem, 26vw, 36rem)",
-                }}
-              >
-                {activeSlide.description}
-              </p>
-
-              <div className="mt-10 flex flex-wrap items-center gap-4">
-                <Link
-                  href={activeSlide.primaryCta.href}
-                  className="inline-flex items-center justify-center rounded-full bg-blue-600 px-10 py-4 text-base font-semibold text-white shadow-[0_18px_48px_rgba(37,99,235,0.34)] transition duration-300 hover:-translate-y-0.5 hover:bg-blue-500"
-                >
-                  {activeSlide.primaryCta.label}
-                </Link>
-
-                <Link
-                  href={activeSlide.secondaryCta.href}
-                  className="inline-flex items-center justify-center rounded-full border border-white/35 bg-white/[0.04] px-8 py-4 text-sm font-semibold text-white transition duration-300 hover:bg-white/10 hover:backdrop-blur-md"
-                >
-                  {activeSlide.secondaryCta.label}
-                </Link>
-              </div>
+            <div className="mt-7 flex items-center gap-4 text-sm text-slate-200/90">
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-xs font-semibold text-white">
+                {String(activeIndex + 1).padStart(2, "0")}
+              </span>
+              <span className="h-px w-10 bg-white/20" />
+              <span>{activeSlide.accent}</span>
             </div>
+
+            <h1 className="mt-6 max-w-[10.5ch] text-5xl font-semibold leading-[0.9] tracking-[-0.04em] text-white sm:text-6xl lg:text-[5.2rem]">
+              {activeSlide.title}
+            </h1>
+
+            <p className="mt-6 max-w-xl text-base leading-7 text-slate-200/90 sm:text-lg lg:max-w-lg lg:text-[1.15rem]">
+              {activeSlide.description}
+            </p>
+
+            <p className="mt-5 text-sm font-medium uppercase tracking-[0.24em] text-sky-100/90">
+              {activeSlide.route}
+            </p>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Link
+                href={activeSlide.primaryCta.href}
+                className="inline-flex items-center justify-center rounded-full bg-sky-400 px-8 py-3.5 text-sm font-semibold text-slate-950 transition duration-300 hover:-translate-y-0.5 hover:bg-sky-300 hover:shadow-lg hover:shadow-sky-400/20"
+              >
+                {activeSlide.primaryCta.label}
+              </Link>
+
+              <Link
+                href={activeSlide.secondaryCta.href}
+                className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-8 py-3.5 text-sm font-semibold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-white/10 hover:border-white/25"
+              >
+                {activeSlide.secondaryCta.label}
+              </Link>
+            </div>
+
+            <dl className="mt-9 grid gap-3 sm:grid-cols-3">
+              {[
+                { value: "24/7", label: "Travel support" },
+                { value: "5+", label: "Years of service" },
+                { value: "Island", label: "Wide coverage" },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-3xl border border-white/10 bg-slate-950/35 p-4 shadow-xl shadow-black/10 backdrop-blur-xl"
+                >
+                  <dt className="text-2xl font-semibold text-white">{item.value}</dt>
+                  <dd className="mt-1 text-sm leading-6 text-slate-300">{item.label}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
 
-          {/* ── RIGHT IMAGE STACK ──
-              All slides are rendered. Each slide's slot = (slideIdx - activeIndex + total) % total.
-              When activeIndex changes, slot numbers change → inline styles change → CSS transition
-              animates the cards physically moving between positions.
-          ── */}
-          <div className="relative w-full min-h-[300px] sm:min-h-[400px] lg:min-h-[530px] lg:justify-self-end lg:-translate-x-[clamp(2.5rem,3.2vw,3.75rem)] lg:translate-y-[clamp(4.5rem,6vw,6.25rem)] xl:min-h-[570px] 2xl:min-h-[610px]">
-            <div className="relative h-full min-h-[300px] sm:min-h-[400px] lg:min-h-[530px] xl:min-h-[570px] 2xl:min-h-[610px] overflow-hidden lg:pl-4 xl:pl-5 2xl:pl-6">
-              {slides.map((slide, slideIdx) => {
-                const slot = (slideIdx - activeIndex + totalSlides) % totalSlides;
-                const config = slot < SLOT_CONFIG.length ? SLOT_CONFIG[slot] : HIDDEN_SLOT;
-                const animated = slot < SLOT_CONFIG.length;
-                const isActiveCard = slot === 0;
-                const floatClass = slot === 0 ? "hero-card-float-a" : slot === 1 ? "hero-card-float-b" : "";
+          <div className="relative min-h-[420px] overflow-visible sm:min-h-[520px] lg:min-h-[640px]">
+            <div className="absolute left-2 top-8 h-64 w-64 rounded-full bg-sky-400/18 blur-3xl motion-safe:animate-pulse sm:left-4 sm:h-72 sm:w-72" />
+            <div className="absolute right-2 top-24 h-56 w-56 rounded-full bg-blue-500/18 blur-3xl motion-safe:animate-pulse motion-safe:[animation-delay:1s] sm:right-4 sm:h-64 sm:w-64" />
+
+            <div className="relative h-full min-h-[420px] overflow-visible sm:min-h-[520px] lg:min-h-[640px]">
+              {stackedSlides.map(({ slide, offset }) => {
+                const isActiveCard = offset === 0;
 
                 return (
                   <article
                     key={slide.id}
+                    className={`absolute overflow-hidden rounded-[30px] border border-white/14 bg-white/10 shadow-[0_24px_70px_rgba(8,15,35,0.26)] backdrop-blur-md transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${stackCardLayouts[offset]}`}
                     aria-hidden={!isActiveCard}
-                    style={{
-                      position: "absolute",
-                      left: config.left,
-                      top: config.top,
-                      width: config.width,
-                      height: config.height,
-                      opacity: config.opacity,
-                      zIndex: config.zIndex,
-                    }}
-                    className={`overflow-hidden rounded-[26px] border border-white/15 bg-white/[0.06] shadow-[0_36px_100px_rgba(2,8,22,0.60)] backdrop-blur-xl ${floatClass} ${
-                      animated
-                        ? "transition-[left,top,width,height,opacity] duration-[700ms] ease-[cubic-bezier(0.22,1,0.36,1)]"
-                        : "transition-none"
-                    }`}
                   >
-                    <Image
-                      src={slide.image}
-                      alt={slide.imageAlt}
-                      fill
-                      quality={isActiveCard ? 100 : 92}
-                      priority={slideIdx === 0}
-                      sizes="(min-width: 1536px) 560px, (min-width: 1280px) 500px, (min-width: 1024px) 440px, 74vw"
-                      className={`object-cover ${slide.positionClass}`}
-                    />
+                    <div className="absolute inset-0">
+                      <Image
+                        src={slide.image}
+                        alt={slide.imageAlt}
+                        fill
+                        priority={offset === 0}
+                        quality={95}
+                        sizes={isActiveCard ? "(min-width: 1280px) 432px, (min-width: 1024px) 400px, (min-width: 640px) 344px, 74vw" : "(min-width: 1280px) 176px, (min-width: 1024px) 168px, 140px"}
+                        className={`object-cover ${slide.positionClass}`}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/48 via-slate-950/8 to-white/8" />
+                    </div>
 
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#07111f]/56 via-[#07111f]/14 to-transparent" />
+                    <div className="absolute inset-0 border border-white/10 rounded-[30px]" />
 
                     <div className="absolute inset-x-3 bottom-3 sm:inset-x-4 sm:bottom-4">
-                      <div className="inline-flex max-w-full items-center rounded-full border border-white/12 bg-slate-950/46 px-4 py-2 backdrop-blur-xl">
+                      <div className={`inline-flex max-w-full items-center rounded-full border border-white/10 bg-slate-950/42 px-4 py-2 backdrop-blur-xl ${isActiveCard ? "" : "px-3 py-1.5"}`}>
                         <p className={`truncate font-semibold text-white ${isActiveCard ? "text-base sm:text-lg" : "text-sm"}`}>
                           {slide.title}
                         </p>
@@ -299,24 +240,21 @@ export default function HeroSlider() {
                 );
               })}
             </div>
-          </div>
 
-          {/* ── BOTTOM ROW — watermark + slide indicators ──
-              Left padding matches the left-content flex indent
-              so the watermark aligns with the heading.
-          ── */}
-          <div className="col-span-full mt-1 grid items-center gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:pl-8 xl:pl-12 2xl:pl-16">
-            <p
-              className="font-semibold text-white/[0.13]"
-              style={{ fontSize: "clamp(2.5rem, 5.5vw, 7rem)" }}
-            >
-              {activeSlide.title}
-            </p>
+            <div className="mt-5 flex items-center justify-between gap-4">
+              <button
+                type="button"
+                onClick={goToPrevious}
+                aria-label="Previous slide"
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/8 text-white transition hover:bg-white/12 focus:outline-none focus:ring-2 focus:ring-sky-400"
+              >
+                <ChevronLeft aria-hidden="true" className="h-5 w-5" />
+              </button>
 
-            <div className="flex items-center justify-end gap-3 lg:justify-self-end">
               <div className="flex items-center gap-2" role="tablist" aria-label="Hero slides">
                 {slides.map((slide, index) => {
                   const isActive = index === activeIndex;
+
                   return (
                     <button
                       key={slide.id}
@@ -326,36 +264,22 @@ export default function HeroSlider() {
                       aria-label={`Go to ${slide.title}`}
                       onClick={() => goToSlide(index)}
                       className={`h-2.5 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-sky-400 ${
-                        isActive ? "w-10 bg-white" : "w-2.5 bg-white/35 hover:bg-white/60"
+                        isActive ? "w-10 bg-sky-400" : "w-2.5 bg-white/30 hover:bg-white/50"
                       }`}
                     />
                   );
                 })}
               </div>
+
+              <button
+                type="button"
+                onClick={goToNext}
+                aria-label="Next slide"
+                className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/8 text-white transition hover:bg-white/12 focus:outline-none focus:ring-2 focus:ring-sky-400"
+              >
+                <ChevronRight aria-hidden="true" className="h-5 w-5" />
+              </button>
             </div>
-          </div>
-        </div>
-
-        {/* ── Center-bottom prev/next arrows ── */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-10 hidden justify-center lg:flex">
-          <div className="pointer-events-auto flex items-center gap-3">
-            <button
-              type="button"
-              onClick={goToPrevious}
-              aria-label="Previous slide"
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/18 focus:outline-none focus:ring-2 focus:ring-sky-400"
-            >
-              <span aria-hidden="true" className="text-xl leading-none">‹</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={goToNext}
-              aria-label="Next slide"
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/18 focus:outline-none focus:ring-2 focus:ring-sky-400"
-            >
-              <span aria-hidden="true" className="text-xl leading-none">›</span>
-            </button>
           </div>
         </div>
       </div>

@@ -32,16 +32,14 @@ export default function About() {
             <div className="relative overflow-hidden rounded-[2.2rem] border border-slate-200 bg-white p-6 shadow-[0_36px_90px_rgba(15,23,42,0.16)] sm:p-8">
               <div className="relative aspect-[11/10] overflow-hidden rounded-[1.7rem] bg-gradient-to-br from-[#eef5ff] via-[#f8fbff] to-[#e8f1ff]">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(56,189,248,0.2),transparent_40%),radial-gradient(circle_at_80%_80%,rgba(37,99,235,0.16),transparent_45%)]" />
-                <div className="relative flex h-full items-center justify-center p-10 sm:p-12">
-                  <Image
-                    src="/images/logo/qpick-logo.webp"
-                    alt="QPick Tours logo"
-                    fill
-                    sizes="(min-width: 1280px) 520px, (min-width: 768px) 46vw, 92vw"
-                    className="object-contain p-[clamp(2rem,5vw,4rem)]"
-                    priority
-                  />
-                </div>
+                <Image
+                  src="/images/logo/qpick-logo.webp"
+                  alt="QPick Tours logo"
+                  fill
+                  sizes="(min-width: 1280px) 520px, (min-width: 768px) 46vw, 92vw"
+                  className="object-cover object-center"
+                  priority
+                />
               </div>
             </div>
 
