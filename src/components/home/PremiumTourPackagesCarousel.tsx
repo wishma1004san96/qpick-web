@@ -169,20 +169,26 @@ function TourCarousel({ slidesPerView }: TourCarouselProps) {
       style={{ touchAction: 'pan-y' }}
     >
       <div className="relative">
-        <div className="overflow-hidden pb-3">
+        <div className="overflow-x-hidden overflow-y-visible pb-3">
           <div
             className="flex will-change-transform"
             style={{
               transform: `translate3d(-${currentIndex * (100 / slidesPerView)}%, 0, 0)`,
-              transition: isAnimating ? 'transform 760ms cubic-bezier(0.22, 1, 0.36, 1)' : 'none',
+              transition: isAnimating ? 'transform 620ms cubic-bezier(0.22, 1, 0.36, 1)' : 'none',
             }}
             onTransitionEnd={handleTransitionEnd}
           >
             {loopedTours.map((tour, index) => (
               <div
                 key={`${tour.title}-${index}`}
-                className="shrink-0 px-2.5 first:pl-0 last:pr-0 md:px-3"
-                style={{ flexBasis: `${100 / slidesPerView}%` }}
+                className={`shrink-0 ${
+                  slidesPerView === 1 ? 'px-0' : 'px-2.5 first:pl-0 last:pr-0 md:px-3'
+                }`}
+                style={{
+                  flexBasis: slidesPerView === 1 ? '100%' : `${100 / slidesPerView}%`,
+                  minWidth: slidesPerView === 1 ? '100%' : undefined,
+                  maxWidth: slidesPerView === 1 ? '100%' : undefined,
+                }}
               >
                 <motion.article
                   whileHover={{ y: -8 }}

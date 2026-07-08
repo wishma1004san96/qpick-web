@@ -11,10 +11,10 @@ const transitionMs = 600;
 const autoSlideMs = 5000;
 
 const stackCardLayouts = [
-  'left-0 bottom-0 z-40 h-[386px] w-[74vw] max-w-[24rem] sm:h-[472px] sm:w-[22rem] lg:h-[570px] lg:w-[25rem] xl:w-[26.25rem]',
-  'left-[46%] bottom-[24px] z-30 h-[338px] w-[65vw] max-w-[21rem] sm:left-[47%] sm:bottom-[29.5px] sm:h-[413px] sm:w-[19.25rem] lg:left-[48%] lg:bottom-[35.5px] lg:h-[499px] lg:w-[21.875rem] xl:left-[49%] xl:w-[22.97rem]',
-  'left-[73%] bottom-[58px] z-20 h-[270px] w-[52vw] max-w-[16.8rem] sm:left-[74%] sm:bottom-[71px] sm:h-[330px] sm:w-[15.4rem] lg:left-[75%] lg:bottom-[85.5px] lg:h-[399px] lg:w-[17.5rem] xl:left-[76%] xl:w-[18.375rem]',
-  'left-[89.5%] bottom-[87px] z-10 h-[212px] w-[41vw] max-w-[13.2rem] sm:left-[90%] sm:bottom-[106px] sm:h-[260px] sm:w-[12.1rem] lg:left-[90.5%] lg:bottom-[128px] lg:h-[314px] lg:w-[13.75rem] xl:left-[91%] xl:w-[14.44rem]',
+  'left-0 bottom-0 z-40 h-[386px] w-full max-w-none sm:w-[22rem] sm:max-w-[24rem] sm:h-[472px] lg:h-[570px] lg:w-[25rem] xl:w-[26.25rem]',
+  'left-full bottom-[24px] z-30 h-[338px] w-full max-w-none sm:left-[47%] sm:w-[19.25rem] sm:max-w-[21rem] sm:bottom-[29.5px] sm:h-[413px] lg:left-[48%] lg:bottom-[35.5px] lg:h-[499px] lg:w-[21.875rem] xl:left-[49%] xl:w-[22.97rem]',
+  'left-[200%] bottom-[58px] z-20 h-[270px] w-full max-w-none sm:left-[74%] sm:w-[15.4rem] sm:max-w-[16.8rem] sm:bottom-[71px] sm:h-[330px] lg:left-[75%] lg:bottom-[85.5px] lg:h-[399px] lg:w-[17.5rem] xl:left-[76%] xl:w-[18.375rem]',
+  'left-[300%] bottom-[87px] z-10 h-[212px] w-full max-w-none sm:left-[90%] sm:w-[12.1rem] sm:max-w-[13.2rem] sm:bottom-[106px] sm:h-[260px] lg:left-[90.5%] lg:bottom-[128px] lg:h-[314px] lg:w-[13.75rem] xl:left-[91%] xl:w-[14.44rem]',
 ];
 
 const stackCardDepthClasses = [
@@ -143,14 +143,14 @@ export default function HeroSlider({ compact = false }: HeroSliderProps) {
 
   const sliderPanel = (
     <div
-      className="relative min-h-[390px] overflow-visible sm:min-h-[480px] lg:min-h-[570px]"
+      className="relative min-h-[390px] overflow-hidden sm:overflow-visible sm:min-h-[480px] lg:min-h-[570px]"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="absolute left-2 top-8 h-64 w-64 rounded-full bg-sky-400/18 blur-3xl motion-safe:animate-pulse sm:left-4 sm:h-72 sm:w-72" />
       <div className="absolute right-2 top-24 h-56 w-56 rounded-full bg-blue-500/18 blur-3xl motion-safe:animate-pulse motion-safe:[animation-delay:1s] sm:right-4 sm:h-64 sm:w-64" />
 
-      <div className="relative h-full min-h-[390px] overflow-visible sm:min-h-[480px] lg:min-h-[570px]">
+      <div className="relative h-full min-h-[390px] overflow-hidden sm:overflow-visible sm:min-h-[480px] lg:min-h-[570px]">
         {stackedSlides.map(({ slide, offset }) => {
           const isActiveCard = offset === 0;
 
@@ -169,7 +169,7 @@ export default function HeroSlider({ compact = false }: HeroSliderProps) {
                   quality={95}
                   sizes={
                     isActiveCard
-                      ? '(min-width: 1280px) 432px, (min-width: 1024px) 400px, (min-width: 640px) 344px, 74vw'
+                      ? '(min-width: 1280px) 432px, (min-width: 1024px) 400px, (min-width: 640px) 344px, 100vw'
                       : '(min-width: 1280px) 176px, (min-width: 1024px) 168px, 140px'
                   }
                   className={`object-cover transition-transform duration-700 hover:scale-105 ${slide.positionClass}`}
