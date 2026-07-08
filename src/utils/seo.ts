@@ -4,9 +4,9 @@ const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
 export const SITE_URL = rawSiteUrl && rawSiteUrl.length > 0 ? rawSiteUrl : 'http://localhost:3000';
 
 export const SITE_NAME = 'Q Pick';
-export const DEFAULT_TITLE = 'Q Pick - Chauffeur Tours & Travel in Sri Lanka';
+export const DEFAULT_TITLE = 'Q Pick | Sri Lanka Tours, Airport Transfers & Ride Booking App';
 export const DEFAULT_DESCRIPTION =
-  'Explore Sri Lanka with Q Pick private chauffeur tours, tailor-made itineraries, airport transfers, and premium vehicles.';
+  "Q Pick is Sri Lanka's premium travel platform offering airport transfers, chauffeur services, private tours, tailor-made travel experiences, and a modern ride booking app for travelers and locals.";
 
 const DEFAULT_OG_IMAGE = '/images/logo/qpick-logo.webp';
 

@@ -8,6 +8,7 @@ import { DEFAULT_DESCRIPTION, DEFAULT_TITLE, SITE_NAME } from '@/utils/seo';
 
 import '@/styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
+import 'leaflet/dist/leaflet.css';
 
 
 const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
@@ -34,12 +35,19 @@ export const metadata: Metadata = {
   applicationName: SITE_NAME,
   category: 'travel',
   keywords: [
-    'Sri Lanka tours',
-    'chauffeur service Sri Lanka',
-    'airport transfers Sri Lanka',
-    'private tours Sri Lanka',
-    'tailor made tours Sri Lanka',
     'Q Pick',
+    'Q Pick Sri Lanka',
+    'Ride Booking App',
+    'Taxi Booking',
+    'Airport Transfers',
+    'Chauffeur Service',
+    'Private Tours',
+    'Tailor Made Tours',
+    'Luxury Transport',
+    'Sri Lanka Tourism',
+    'Travel Sri Lanka',
+    'Tour Booking',
+    'Taxi App Sri Lanka',
   ],
   alternates: {
     canonical: '/',
@@ -49,14 +57,14 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: '/',
     siteName: SITE_NAME,
-    title: DEFAULT_TITLE,
-    description: DEFAULT_DESCRIPTION,
+    title: 'Q Pick | Sri Lanka Tours, Airport Transfers & Ride Booking App',
+    description: 'Book premium airport transfers, chauffeur services, private tours, and rides across Sri Lanka with Q Pick.',
     images: ['/images/logo/qpick-logo.webp'],
   },
   twitter: {
     card: 'summary_large_image',
-    title: DEFAULT_TITLE,
-    description: DEFAULT_DESCRIPTION,
+    title: 'Q Pick | Sri Lanka Tours, Airport Transfers & Ride Booking App',
+    description: 'Explore Sri Lanka with Q Pick - premium tours, airport transfers, chauffeur services, and a smart ride booking app.',
     images: ['/images/logo/qpick-logo.webp'],
   },
   robots: {
@@ -72,11 +80,12 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/images/logo/qpick-logo.webp', type: 'image/png' },
-      { url: '/images/logo/qpick-logo.webp', type: 'image/png' },
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/images/logo/qpick-logo.webp', type: 'image/webp' },
     ],
-    shortcut: ['/images/logo/qpick-logo.webp'],
-    apple: [{ url: '/images/logo/qpick-logo.webp' }],
+    shortcut: ['/favicon.ico'],
+    apple: [{ url: '/apple-touch-icon.png', type: 'image/png', sizes: '180x180' }],
   },
 };
 
