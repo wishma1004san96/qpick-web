@@ -52,10 +52,11 @@ export default async function DestinationDetailsPage({
     coordinates: h.coordinates,
   }));
 
-  const highlightsData = await getHighlightsMapData({
+  const highlightsData = getHighlightsMapData({
     slug: destination.slug,
     locationName: destination.name,
     highlights: highlightInputs,
+    fallbackCoordinates: destination.coordinates,
   });
 
   return <DestinationDetails destination={destination} highlightsData={highlightsData} />;

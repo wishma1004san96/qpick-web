@@ -1,5 +1,5 @@
-import HeroSlider from "@/components/home/HeroSlider";
+import PremiumHero from "./PremiumHero";
 
 export default function Hero() {
-  return <HeroSlider />;
+  return <PremiumHero />;
 }

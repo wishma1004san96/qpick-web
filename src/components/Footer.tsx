@@ -7,7 +7,7 @@ import { FaFacebookF, FaInstagram, FaTripadvisor, FaTwitter, FaWhatsapp, FaYoutu
 
 const Footer = () => {
   return (
-    <footer className="bg-[#1A1F2C] py-8">
+    <footer className="border-t border-slate-200 bg-white py-10 dark:border-slate-800 dark:bg-slate-950">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
           {}
@@ -22,7 +22,7 @@ const Footer = () => {
                 priority
               />
             </div>
-            <p className="text-gray-400 text-base leading-relaxed">
+            <p className="text-slate-600 dark:text-slate-400 text-base leading-relaxed">
               Premium chauffeur tours, airport transfers, and travel experiences delivered with care and professionalism.
             </p>
             <div className="flex items-center space-x-4">
@@ -37,7 +37,7 @@ const Footer = () => {
                 <a
                   key={index}
                   href={social.href}
-                  className="text-[#1EAEDB] hover:text-[#33C3F0] transition-colors"
+                  className="text-sky-500 hover:text-sky-600 transition-colors dark:text-sky-400 dark:hover:text-sky-300"
                 >
                   <social.icon className="w-5 h-5" />
                 </a>
@@ -47,7 +47,7 @@ const Footer = () => {
 
           {}
           <div className="space-y-3">
-            <h3 className="text-base font-semibold text-white">Navigation</h3>
+            <h3 className="text-base font-semibold text-slate-900 dark:text-white">Navigation</h3>
             <ul className="space-y-2">
               {[
                 { name: 'Destinations', path: '/destinations' },
@@ -57,7 +57,7 @@ const Footer = () => {
                 <li key={item.name}>
                   <Link 
                     href={item.path}
-                    className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 group text-base"
+                    className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors flex items-center gap-2 group text-base"
                   >
                     <span>{item.name}</span>
                   </Link>
@@ -68,7 +68,7 @@ const Footer = () => {
 
           {}
           <div className="space-y-3">
-            <h3 className="text-base font-semibold text-white">Our Values</h3>
+            <h3 className="text-base font-semibold text-slate-900 dark:text-white">Our Values</h3>
             <ul className="space-y-2">
               {[
                 { name: 'About', path: '/about' },
@@ -77,7 +77,7 @@ const Footer = () => {
                 <li key={item.name}>
                   <Link 
                     href={item.path}
-                    className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 group text-base"
+                    className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors flex items-center gap-2 group text-base"
                     onClick={() => {
                       if (item.path.includes('#')) {
                         setTimeout(() => {
@@ -97,7 +97,7 @@ const Footer = () => {
 
           {}
           <div className="space-y-3">
-            <h3 className="text-base font-semibold text-white">Legal</h3>
+            <h3 className="text-base font-semibold text-slate-900 dark:text-white">Legal</h3>
             <ul className="space-y-2">
               {[
                 { name: 'FAQ', path: '/faq' },
@@ -107,7 +107,7 @@ const Footer = () => {
                 <li key={item.name}>
                   <Link 
                     href={item.path}
-                    className="text-gray-400 hover:text-white transition-colors flex items-center gap-2 group text-base"
+                    className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors flex items-center gap-2 group text-base"
                   >
                     <span>{item.name}</span>
                   </Link>
@@ -118,28 +118,28 @@ const Footer = () => {
 
           {}
           <div className="space-y-3">
-            <h3 className="text-base font-semibold text-white">Contact Us</h3>
+            <h3 className="text-base font-semibold text-slate-900 dark:text-white">Contact Us</h3>
             <div className="space-y-3">
               <div className="flex items-start space-x-2">
-                <MapPin className="w-5 h-5 text-[#1EAEDB] mt-1" />
-                <p className="text-gray-400 text-base">
+                <MapPin className="w-5 h-5 text-sky-500 dark:text-sky-400 mt-1" />
+                <p className="text-slate-600 dark:text-slate-400 text-base">
                   No. 230A, Palagathura,<br />
                   Negombo.
                 </p>
               </div>
               <div className="flex items-center space-x-2">
-                <Mail className="w-5 h-5 text-[#1EAEDB]" />
-                <a href="mailto:contact@quickpickapp.com" className="text-gray-400 hover:text-white transition-colors text-base">
+                <Mail className="w-5 h-5 text-sky-500 dark:text-sky-400" />
+                <a href="mailto:contact@quickpickapp.com" className="text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors text-base">
                   contact@quickpickapp.com
                 </a>
               </div>
               <div className="flex items-center space-x-2">
-                <Phone className="w-5 h-5 text-[#1EAEDB]" />
+                <Phone className="w-5 h-5 text-sky-500 dark:text-sky-400" />
                 <div className="space-y-1">
-                  <a href="tel:+94114334334" className="block text-gray-400 hover:text-white transition-colors text-base">+94 11 433 4334</a>
-                  <a href="tel:+94114734334" className="block text-gray-400 hover:text-white transition-colors text-base">+94 11 473 4334</a>
-                  <a href="tel:+94773619000" className="block text-gray-400 hover:text-white transition-colors text-base">+94 77 361 9000</a>
-                  <a href="tel:+94783619000" className="block text-gray-400 hover:text-white transition-colors text-base">+94 78 361 9000</a>
+                  <a href="tel:+94114334334" className="block text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors text-base">+94 11 433 4334</a>
+                  <a href="tel:+94114734334" className="block text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors text-base">+94 11 473 4334</a>
+                  <a href="tel:+94773619000" className="block text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors text-base">+94 77 361 9000</a>
+                  <a href="tel:+94783619000" className="block text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors text-base">+94 78 361 9000</a>
                 </div>
               </div>
             </div>
@@ -147,10 +147,10 @@ const Footer = () => {
         </div>
 
         {}
-        <div className="mt-6 pt-4 border-t border-gray-800">
-          <p className="text-center text-gray-500 text-sm">
-            © {new Date().getFullYear()} <span className="text-[#1EAEDB]">Q Pick</span>. Design & Develop by{' '}
-            <span className="text-[#1EAEDB]"> Tech Eagle Hub</span>
+        <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800">
+          <p className="text-center text-slate-500 dark:text-slate-500 text-sm">
+            © {new Date().getFullYear()} <span className="text-sky-500 dark:text-sky-400">Q Pick</span>. Design & Develop by{' '}
+            <span className="text-sky-500 dark:text-sky-400"> Tech Eagle Hub</span>
           </p>
         </div>
       </div>

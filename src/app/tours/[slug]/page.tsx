@@ -4,7 +4,8 @@ import type { Metadata } from 'next';
 import { tours } from '@/data/tours';
 import TourDetails, { slugifyTourTitle, getTourDestinations } from '@/pageComponents/TourDetails';
 import { buildMetadata } from '@/utils/seo';
-import { getRouteData } from '@/lib/route-cache';
+import { getDestinationBySlug } from '@/data/destinations-data';
+import type { RouteData } from '@/components/route-map-client';
 
 export function generateStaticParams() {
   return tours.map((tour) => ({ slug: slugifyTourTitle(tour.title) }));
@@ -47,8 +48,21 @@ export default async function TourDetailsPage({
   if (!tour) notFound();
 
   const destinations = getTourDestinations(tour);
-  const stops = destinations.map(d => d.name);
-  const routeData = await getRouteData(stops);
+  const routeStops = destinations
+    .map<RouteData['stops'][number] | null>((destination, index) => {
+      const destinationData = getDestinationBySlug(destination.slug);
+      if (!destinationData?.coordinates) return null;
+
+      return {
+        name: destinationData.name,
+        description: destinationData.shortDescription,
+        coordinates: destinationData.coordinates,
+        stopNumber: index + 1,
+      };
+    })
+    .filter((stop): stop is RouteData['stops'][number] => stop !== null);
+
+  const routeData = routeStops.length ? { stops: routeStops } : null;
 
   return <TourDetails tour={tour} routeData={routeData} />;
 }

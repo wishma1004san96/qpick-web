@@ -5,7 +5,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import dynamic from 'next/dynamic';
 import {
   ArrowLeft,
   ArrowRight,
@@ -281,7 +280,7 @@ export default function DestinationDetails({ destination, highlightsData }: { de
     [destination.experiences?.length, destination.highlightsDetailed?.length, destination.tips?.length, images.length]
   );
 
-  const [activeTab, setActiveTab] = useState<(typeof tabs)[number]['key']>('about');
+  const [activeTab, setActiveTab] = useState<(typeof tabs)[number]['key']>(() => tabs[0]?.key ?? 'about');
 
   const [stickyTopPx, setStickyTopPx] = useState<number>(80);
   const tabsSentinelRef = useRef<HTMLDivElement | null>(null);
@@ -339,12 +338,7 @@ export default function DestinationDetails({ destination, highlightsData }: { de
     };
   }, []);
 
-  useEffect(() => {
-    if (!tabs.length) return;
-    if (!tabs.some((t) => t.key === activeTab)) {
-      setActiveTab(tabs[0].key);
-    }
-  }, [activeTab, tabs]);
+  const resolvedActiveTab = tabs.some((tab) => tab.key === activeTab) ? activeTab : (tabs[0]?.key ?? 'about');
 
   const scrollToContentTop = () => {
     if (!tabsSentinelRef.current) return;
@@ -359,10 +353,7 @@ export default function DestinationDetails({ destination, highlightsData }: { de
   };
 
   const openHighlightOnMap = async (title: string) => {
-    // This function handled opening a leaflet popup.
-    // The Google map wrapper handles popups internally on marker click.
-    // If you need programmatic popup opening, you would pass a state down to HighlightMapClient.
-    // For now, we just let the user click the markers.
+    // The map popup opens from marker interactions; keep this hook for future controlled popups.
     lastOpenedPopupTitleRef.current = title;
   };
 
@@ -548,7 +539,7 @@ export default function DestinationDetails({ destination, highlightsData }: { de
         <div className="container mx-auto px-4 pt-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
             <div className="lg:col-span-8">
-              {activeTab === 'about' ? (
+              {resolvedActiveTab === 'about' ? (
                 <div className="bg-white dark:bg-[#1C2537]/50 backdrop-blur-sm rounded-2xl border border-[#E9ECEF] dark:border-gray-800 p-6">
                   <h2 className="text-xl font-bold text-[#2C3E50] dark:text-white">About {destination.name}</h2>
 
@@ -564,7 +555,7 @@ export default function DestinationDetails({ destination, highlightsData }: { de
                 </div>
               ) : null}
 
-              {activeTab === 'gallery' && images.length ? (
+              {resolvedActiveTab === 'gallery' && images.length ? (
                 <div className="bg-white dark:bg-[#1C2537]/50 backdrop-blur-sm rounded-2xl border border-[#E9ECEF] dark:border-gray-800 p-6">
                   <div className="flex items-center justify-between gap-4">
                     <h2 className="text-lg font-bold text-[#2C3E50] dark:text-white">Gallery</h2>
@@ -601,7 +592,7 @@ export default function DestinationDetails({ destination, highlightsData }: { de
                 </div>
               ) : null}
 
-              {activeTab === 'highlights' ? (
+              {resolvedActiveTab === 'highlights' ? (
                 <div className="space-y-6">
                   {highlightsData?.points?.length ? (
                     <div className="bg-white dark:bg-[#1C2537]/50 backdrop-blur-sm rounded-2xl border border-[#E9ECEF] dark:border-gray-800 p-6">
@@ -687,7 +678,7 @@ export default function DestinationDetails({ destination, highlightsData }: { de
                 </div>
               ) : null}
 
-              {activeTab === 'experiences' && destination.experiences?.length ? (
+              {resolvedActiveTab === 'experiences' && destination.experiences?.length ? (
                 <div className="space-y-6">
                   <div className="bg-white dark:bg-[#1C2537]/50 backdrop-blur-sm rounded-2xl border border-[#E9ECEF] dark:border-gray-800 p-6">
                     <h2 className="text-lg font-bold text-[#2C3E50] dark:text-white">Experiences</h2>

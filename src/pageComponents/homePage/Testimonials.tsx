@@ -90,11 +90,7 @@ const Testimonials = () => {
   };
 
   const pages = Array.from({ length: totalPages }, (_, pageIndex) => getPageItems(pageIndex));
-
-  useEffect(() => {
-    if (totalPages <= 0) return;
-    setCurrentPage((prev) => prev % totalPages);
-  }, [totalPages]);
+  const safeCurrentPage = totalPages > 0 ? currentPage % totalPages : 0;
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
@@ -166,12 +162,12 @@ const Testimonials = () => {
 
   return (
     <section
-      className="relative py-20 bg-cover bg-center bg-fixed overflow-hidden"
+      className="relative overflow-hidden bg-transparent py-20 sm:py-24"
       style={{
         backgroundImage: "url(/assets/images/train.jpeg)", 
       }}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/70 to-black/80 backdrop-blur-[2px]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-white/85 via-white/72 to-white/88 backdrop-blur-[1.5px] dark:from-black/80 dark:via-black/70 dark:to-black/80" />
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full bg-primary/15 blur-3xl" />
         <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-accent/10 blur-3xl" />
@@ -179,8 +175,8 @@ const Testimonials = () => {
       
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <h2 className="text-4xl font-bold mb-3 text-white">What Our Travelers Say</h2>
-          <p className="text-gray-300">
+          <h2 className="text-4xl font-bold mb-3 text-slate-900 dark:text-white">What Our Travelers Say</h2>
+          <p className="text-slate-600 dark:text-gray-300">
             Real experiences from our valued guests who have explored Sri Lanka with us.
           </p>
         </div>
@@ -197,7 +193,7 @@ const Testimonials = () => {
           <div className="relative overflow-hidden max-w-6xl mx-auto">
             <div
               className="flex transition-transform duration-500 ease-out will-change-transform"
-              style={{ transform: `translateX(-${currentPage * 100}%)` }}
+              style={{ transform: `translateX(-${safeCurrentPage * 100}%)` }}
             >
               {pages.map((page, pageIndex) => (
                 <div key={pageIndex} className="min-w-full px-0">
@@ -205,7 +201,7 @@ const Testimonials = () => {
                     {page.map((testimonial, index) => (
                       <div
                         key={`${pageIndex}-${index}`}
-                        className="group bg-white/5 backdrop-blur-md p-7 rounded-2xl border border-white/10 hover:bg-white/10 transition-colors duration-300"
+                        className="group rounded-2xl border border-slate-200 bg-white/85 p-7 backdrop-blur-md transition-colors duration-300 hover:bg-white dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10"
                       >
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex items-center gap-3">
@@ -214,11 +210,11 @@ const Testimonials = () => {
                               alt={testimonial.author}
                               width={48}
                               height={48}
-                              className="w-12 h-12 rounded-full object-cover ring-2 ring-white/10"
+                              className="w-12 h-12 rounded-full object-cover ring-2 ring-slate-200 dark:ring-white/10"
                             />
                             <div>
-                              <h4 className="text-white font-semibold leading-tight">{testimonial.author}</h4>
-                              <p className="text-gray-400 text-sm">{testimonial.role}</p>
+                              <h4 className="font-semibold leading-tight text-slate-900 dark:text-white">{testimonial.author}</h4>
+                              <p className="text-sm text-slate-500 dark:text-gray-400">{testimonial.role}</p>
                             </div>
                           </div>
 
@@ -228,7 +224,7 @@ const Testimonials = () => {
                               return (
                                 <Star
                                   key={i}
-                                  className={`w-4 h-4 ${filled ? 'text-accent fill-accent' : 'text-white/20'}`}
+                                  className={`w-4 h-4 ${filled ? 'text-accent fill-accent' : 'text-slate-300 dark:text-white/20'}`}
                                 />
                               );
                             })}
@@ -236,8 +232,8 @@ const Testimonials = () => {
                         </div>
 
                         <div className="mt-5">
-                          <Quote className="w-8 h-8 text-white/20" />
-                          <p className="mt-3 text-gray-200/95 text-sm leading-relaxed">
+                          <Quote className="w-8 h-8 text-slate-300 dark:text-white/20" />
+                          <p className="mt-3 text-sm leading-relaxed text-slate-700 dark:text-gray-200/95">
                             {testimonial.text}
                           </p>
                         </div>
@@ -253,7 +249,7 @@ const Testimonials = () => {
             <button
               type="button"
               onClick={goPrev}
-              className="h-9 w-9 rounded-full border border-white/15 bg-white/5 text-white hover:bg-white/10 transition cursor-pointer"
+              className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-800 transition hover:bg-slate-50 cursor-pointer dark:border-white/15 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
               aria-label="Previous testimonials"
             >
               <ChevronLeft className="w-5 h-5 mx-auto" />
@@ -265,9 +261,9 @@ const Testimonials = () => {
                   key={index}
                   onClick={() => handlePageChange(index)}
                   className={`h-2 rounded-full transition-all duration-300 ${
-                    currentPage === index
-                      ? 'w-8 bg-white'
-                      : 'w-2 bg-white/30 hover:bg-white/50'
+                    safeCurrentPage === index
+                      ? 'w-8 bg-sky-500 dark:bg-white'
+                      : 'w-2 bg-slate-300 hover:bg-slate-400 dark:bg-white/30 dark:hover:bg-white/50'
                   }`}
                   style={{ cursor: 'pointer' }}
                   aria-label={`Go to testimonials page ${index + 1}`}
@@ -278,7 +274,7 @@ const Testimonials = () => {
             <button
               type="button"
               onClick={goNext}
-              className="h-9 w-9 rounded-full border border-white/15 bg-white/5 text-white hover:bg-white/10 transition cursor-pointer"
+              className="h-9 w-9 rounded-full border border-slate-200 bg-white text-slate-800 transition hover:bg-slate-50 cursor-pointer dark:border-white/15 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
               aria-label="Next testimonials"
             >
               <ChevronRight className="w-5 h-5 mx-auto" />

@@ -46,10 +46,9 @@ const features = [
 
 export default function WhyChooseQPick() {
   return (
-    <section className="relative overflow-hidden bg-[#F8F9FA] py-16 sm:py-20 dark:bg-[#0B1120]">
-      <div className="absolute inset-x-0 top-0 h-px bg-gray-200/70 dark:bg-white/10" aria-hidden />
+    <section id="services" className="relative overflow-hidden bg-transparent py-20 sm:py-24">
       <div
-        className="absolute inset-0 opacity-80 dark:opacity-100"
+        className="absolute inset-0 opacity-65 dark:opacity-85"
         aria-hidden
         style={{
           backgroundImage: [
@@ -60,7 +59,7 @@ export default function WhyChooseQPick() {
         }}
       />
       <div
-        className="absolute inset-0 opacity-[0.22] dark:opacity-[0.12]"
+        className="absolute inset-0 opacity-[0.14] dark:opacity-[0.08]"
         aria-hidden
         style={{
           backgroundImage: 'radial-gradient(circle, rgba(15,23,42,0.14) 1px, transparent 1px)',

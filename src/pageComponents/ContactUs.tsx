@@ -1,10 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { Phone, Mail, MapPin, User, Globe, MessageSquare } from 'lucide-react';
 import AnimatedSection from '@/components/AnimatedSection';
 import { sendEmail } from '../services/emailService';
 import PageHero from '@/components/PageHero';
+
+const ContactOfficeMap = dynamic(() => import('./ContactOfficeMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-[300px] w-full bg-slate-50 dark:bg-[#0B1120]/40" aria-label="Loading office map" />
+  ),
+});
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -147,6 +155,12 @@ const ContactUs = () => {
                         No. 230A, Palagathura, Negombo.
                       </p>
                     </div>
+                  </div>
+                </div>
+
+                <div className="sm:col-span-2 lg:col-span-1 rounded-2xl bg-white dark:bg-white/5 border border-gray-200/70 dark:border-white/10 p-4">
+                  <div className="rounded-xl overflow-hidden border border-gray-200/70 dark:border-white/10">
+                    <ContactOfficeMap />
                   </div>
                 </div>
               </div>

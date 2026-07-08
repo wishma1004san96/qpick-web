@@ -1,26 +1,39 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { heroSlides } from "@/data/heroSlides";
+import Image from 'next/image';
+import Link from 'next/link';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+
+import { heroSlides } from '@/data/heroSlides';
 
 const transitionMs = 600;
-const autoSlideMs = 6000;
+const autoSlideMs = 5000;
 
 const stackCardLayouts = [
-  "left-0 top-4 z-40 h-[380px] w-[74vw] max-w-[23rem] sm:h-[460px] sm:w-[21.5rem] lg:h-[560px] lg:w-[25rem] xl:w-[27rem]",
-  "left-[63%] top-12 z-30 h-[250px] w-[8rem] -translate-x-1/2 sm:left-[66%] sm:h-[302px] sm:w-[9rem] lg:left-[65%] lg:top-12 lg:h-[358px] lg:w-[10.5rem] xl:left-[67%]",
-  "left-[77%] top-20 z-20 h-[224px] w-[6.75rem] -translate-x-1/2 sm:left-[79%] sm:h-[270px] sm:w-[7.5rem] lg:left-[80%] lg:top-20 lg:h-[316px] lg:w-[8.5rem] xl:left-[81.5%]",
-  "left-[89%] top-28 z-10 h-[196px] w-[5.75rem] -translate-x-1/2 opacity-90 sm:left-[91%] sm:h-[236px] sm:w-[6.5rem] lg:left-[92.5%] lg:top-28 lg:h-[280px] lg:w-[7.5rem] xl:left-[94%]",
+  'left-0 bottom-0 z-40 h-[386px] w-[74vw] max-w-[24rem] sm:h-[472px] sm:w-[22rem] lg:h-[570px] lg:w-[25rem] xl:w-[26.25rem]',
+  'left-[46%] bottom-[24px] z-30 h-[338px] w-[65vw] max-w-[21rem] sm:left-[47%] sm:bottom-[29.5px] sm:h-[413px] sm:w-[19.25rem] lg:left-[48%] lg:bottom-[35.5px] lg:h-[499px] lg:w-[21.875rem] xl:left-[49%] xl:w-[22.97rem]',
+  'left-[73%] bottom-[58px] z-20 h-[270px] w-[52vw] max-w-[16.8rem] sm:left-[74%] sm:bottom-[71px] sm:h-[330px] sm:w-[15.4rem] lg:left-[75%] lg:bottom-[85.5px] lg:h-[399px] lg:w-[17.5rem] xl:left-[76%] xl:w-[18.375rem]',
+  'left-[89.5%] bottom-[87px] z-10 h-[212px] w-[41vw] max-w-[13.2rem] sm:left-[90%] sm:bottom-[106px] sm:h-[260px] sm:w-[12.1rem] lg:left-[90.5%] lg:bottom-[128px] lg:h-[314px] lg:w-[13.75rem] xl:left-[91%] xl:w-[14.44rem]',
 ];
 
-export default function HeroSlider() {
+const stackCardDepthClasses = [
+  'opacity-100 shadow-[0_36px_92px_rgba(8,15,35,0.48)]',
+  'opacity-92 shadow-[0_24px_62px_rgba(8,15,35,0.28)]',
+  'opacity-80 shadow-[0_18px_46px_rgba(8,15,35,0.20)]',
+  'opacity-68 shadow-[0_12px_30px_rgba(8,15,35,0.14)]',
+];
+
+type HeroSliderProps = {
+  compact?: boolean;
+};
+
+export default function HeroSlider({ compact = false }: HeroSliderProps) {
   const slides = heroSlides;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isVideoReady, setIsVideoReady] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const transitionTimeoutRef = useRef<number | null>(null);
   const autoSlideIntervalRef = useRef<number | null>(null);
 
@@ -31,7 +44,7 @@ export default function HeroSlider() {
     offset,
   }));
 
-  const beginTransition = () => {
+  const beginTransition = useCallback(() => {
     setIsTransitioning(true);
 
     if (transitionTimeoutRef.current !== null) {
@@ -41,79 +54,191 @@ export default function HeroSlider() {
     transitionTimeoutRef.current = window.setTimeout(() => {
       setIsTransitioning(false);
     }, transitionMs);
-  };
+  }, []);
 
-  const clearAutoSlide = () => {
+  const clearAutoSlide = useCallback(() => {
     if (autoSlideIntervalRef.current !== null) {
       window.clearInterval(autoSlideIntervalRef.current);
       autoSlideIntervalRef.current = null;
     }
-  };
+  }, []);
 
-  const startAutoSlide = () => {
+  const startAutoSlide = useCallback(() => {
     clearAutoSlide();
+
+    if (isHovered || totalSlides <= 1) {
+      return;
+    }
 
     autoSlideIntervalRef.current = window.setInterval(() => {
       setActiveIndex((current) => (current + 1) % totalSlides);
       beginTransition();
     }, autoSlideMs);
-  };
+  }, [beginTransition, clearAutoSlide, isHovered, totalSlides]);
 
-  const goToSlide = (nextIndex: number) => {
-    if (nextIndex === activeIndex) {
+  const goToSlide = useCallback(
+    (nextIndex: number) => {
+      if (nextIndex === activeIndex) {
+        return;
+      }
+
+      setActiveIndex(nextIndex);
+      beginTransition();
+      startAutoSlide();
+    },
+    [activeIndex, beginTransition, startAutoSlide]
+  );
+
+  const shiftSlide = useCallback(
+    (direction: -1 | 1) => {
+      setActiveIndex((current) => (current + direction + totalSlides) % totalSlides);
+      beginTransition();
+      startAutoSlide();
+    },
+    [beginTransition, startAutoSlide, totalSlides]
+  );
+
+  const goToPrevious = useCallback(() => {
+    shiftSlide(-1);
+  }, [shiftSlide]);
+
+  const goToNext = useCallback(() => {
+    shiftSlide(1);
+  }, [shiftSlide]);
+
+  useEffect(() => {
+    if (isHovered) {
+      clearAutoSlide();
       return;
     }
 
-    setActiveIndex(nextIndex);
-    beginTransition();
     startAutoSlide();
-  };
-
-  const shiftSlide = (direction: -1 | 1) => {
-    setActiveIndex((current) => (current + direction + totalSlides) % totalSlides);
-    beginTransition();
-    startAutoSlide();
-  };
-
-  const goToPrevious = () => {
-    shiftSlide(-1);
-  };
-
-  const goToNext = () => {
-    shiftSlide(1);
-  };
-
-  useEffect(() => {
-    startAutoSlide();
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "ArrowLeft") {
-        goToPrevious();
-      }
-
-      if (event.key === "ArrowRight") {
-        goToNext();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       clearAutoSlide();
-      window.removeEventListener("keydown", handleKeyDown);
 
       if (transitionTimeoutRef.current !== null) {
         window.clearTimeout(transitionTimeoutRef.current);
       }
     };
-  }, [totalSlides]);
+  }, [clearAutoSlide, isHovered, startAutoSlide]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowLeft') {
+        goToPrevious();
+      }
+
+      if (event.key === 'ArrowRight') {
+        goToNext();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [goToNext, goToPrevious]);
+
+  const sliderPanel = (
+    <div
+      className="relative min-h-[390px] overflow-visible sm:min-h-[480px] lg:min-h-[570px]"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className="absolute left-2 top-8 h-64 w-64 rounded-full bg-sky-400/18 blur-3xl motion-safe:animate-pulse sm:left-4 sm:h-72 sm:w-72" />
+      <div className="absolute right-2 top-24 h-56 w-56 rounded-full bg-blue-500/18 blur-3xl motion-safe:animate-pulse motion-safe:[animation-delay:1s] sm:right-4 sm:h-64 sm:w-64" />
+
+      <div className="relative h-full min-h-[390px] overflow-visible sm:min-h-[480px] lg:min-h-[570px]">
+        {stackedSlides.map(({ slide, offset }) => {
+          const isActiveCard = offset === 0;
+
+          return (
+            <article
+              key={slide.id}
+              className={`absolute overflow-hidden rounded-[30px] border border-white/14 bg-white/10 backdrop-blur-md transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${stackCardLayouts[offset]} ${stackCardDepthClasses[offset]}`}
+              aria-hidden={!isActiveCard}
+            >
+              <div className="absolute inset-0">
+                <Image
+                  src={slide.image}
+                  alt={slide.imageAlt}
+                  fill
+                  priority={offset === 0}
+                  quality={95}
+                  sizes={
+                    isActiveCard
+                      ? '(min-width: 1280px) 432px, (min-width: 1024px) 400px, (min-width: 640px) 344px, 74vw'
+                      : '(min-width: 1280px) 176px, (min-width: 1024px) 168px, 140px'
+                  }
+                  className={`object-cover transition-transform duration-700 hover:scale-105 ${slide.positionClass}`}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/48 via-slate-950/8 to-white/8" />
+              </div>
+
+              <div className="absolute inset-0 rounded-[30px] border border-white/10" />
+
+              <div className="absolute inset-x-3 bottom-3 sm:inset-x-4 sm:bottom-4">
+                <div className={`inline-flex max-w-full items-center rounded-full border border-white/10 bg-slate-950/42 px-4 py-2 backdrop-blur-xl ${isActiveCard ? '' : 'px-3 py-1.5'}`}>
+                  <p className={`truncate font-semibold text-white ${isActiveCard ? 'text-base sm:text-lg' : 'text-sm'}`}>
+                    {slide.title}
+                  </p>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      <div className="mt-5 flex items-center justify-between gap-4">
+        <button
+          type="button"
+          onClick={goToPrevious}
+          aria-label="Previous slide"
+          className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/8 text-white transition hover:bg-white/12 focus:outline-none focus:ring-2 focus:ring-sky-400"
+        >
+          <ChevronLeft aria-hidden="true" className="h-5 w-5" />
+        </button>
+
+        <div className="flex items-center gap-2" role="tablist" aria-label="Hero slides">
+          {slides.map((slide, index) => {
+            const isActive = index === activeIndex;
+
+            return (
+              <button
+                key={slide.id}
+                type="button"
+                role="tab"
+                aria-selected={isActive}
+                aria-label={`Go to ${slide.title}`}
+                onClick={() => goToSlide(index)}
+                className={`h-2.5 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-sky-400 ${
+                  isActive ? 'w-10 bg-sky-400' : 'w-2.5 bg-white/30 hover:bg-white/50'
+                }`}
+              />
+            );
+          })}
+        </div>
+
+        <button
+          type="button"
+          onClick={goToNext}
+          aria-label="Next slide"
+          className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/8 text-white transition hover:bg-white/12 focus:outline-none focus:ring-2 focus:ring-sky-400"
+        >
+          <ChevronRight aria-hidden="true" className="h-5 w-5" />
+        </button>
+      </div>
+    </div>
+  );
+
+  if (compact) {
+    return <div className="relative w-full">{sliderPanel}</div>;
+  }
 
   return (
-    <section
-      id="home"
-      aria-label="Hero destinations slider"
-      className="relative isolate min-h-screen overflow-hidden bg-slate-950 text-white"
-    >
+    <section id="home" aria-label="Hero destinations slider" className="relative isolate min-h-screen overflow-hidden bg-slate-950 text-white">
       <video
         autoPlay
         muted
@@ -123,7 +248,7 @@ export default function HeroSlider() {
         aria-hidden="true"
         onLoadedData={() => setIsVideoReady(true)}
         className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-out ${
-          isVideoReady ? "opacity-100" : "opacity-0"
+          isVideoReady ? 'opacity-100' : 'opacity-0'
         }`}
       >
         <source src="/videos/hero-background-15s.mp4" type="video/mp4" />
@@ -134,22 +259,20 @@ export default function HeroSlider() {
       <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.028)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.028)_1px,transparent_1px)] bg-[size:80px_80px] opacity-20" />
 
       <div className="relative mx-auto flex min-h-screen max-w-7xl items-center px-4 py-24 sm:px-6 lg:px-8 lg:py-28">
-        <div className="grid w-full gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(420px,0.98fr)] lg:items-center lg:gap-10 xl:gap-14">
+        <div className="grid w-full gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.9fr)] lg:items-center lg:gap-12 xl:gap-16">
           <div
             className={`relative z-10 max-w-2xl transition-all duration-500 ease-out ${
-              isTransitioning ? "translate-y-2 opacity-0" : "translate-y-0 opacity-100"
+              isTransitioning ? 'translate-y-2 opacity-0' : 'translate-y-0 opacity-100'
             }`}
           >
             <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/8 px-4 py-2 text-xs font-semibold uppercase tracking-[0.22em] text-slate-100 shadow-lg shadow-sky-500/10 backdrop-blur-xl sm:text-sm">
-              <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-emerald-100">
-                Premium island journeys
-              </span>
+              <span className="rounded-full bg-emerald-400/15 px-3 py-1 text-emerald-100">Premium island journeys</span>
               <span className="hidden sm:inline">Trusted by travelers</span>
             </div>
 
             <div className="mt-7 flex items-center gap-4 text-sm text-slate-200/90">
               <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-xs font-semibold text-white">
-                {String(activeIndex + 1).padStart(2, "0")}
+                {String(activeIndex + 1).padStart(2, '0')}
               </span>
               <span className="h-px w-10 bg-white/20" />
               <span>{activeSlide.accent}</span>
@@ -163,9 +286,7 @@ export default function HeroSlider() {
               {activeSlide.description}
             </p>
 
-            <p className="mt-5 text-sm font-medium uppercase tracking-[0.24em] text-sky-100/90">
-              {activeSlide.route}
-            </p>
+            <p className="mt-5 text-sm font-medium uppercase tracking-[0.24em] text-sky-100/90">{activeSlide.route}</p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link
@@ -185,14 +306,11 @@ export default function HeroSlider() {
 
             <dl className="mt-9 grid gap-3 sm:grid-cols-3">
               {[
-                { value: "24/7", label: "Travel support" },
-                { value: "5+", label: "Years of service" },
-                { value: "Island", label: "Wide coverage" },
+                { value: '24/7', label: 'Travel support' },
+                { value: '5+', label: 'Years of service' },
+                { value: 'Island', label: 'Wide coverage' },
               ].map((item) => (
-                <div
-                  key={item.label}
-                  className="rounded-3xl border border-white/10 bg-slate-950/35 p-4 shadow-xl shadow-black/10 backdrop-blur-xl"
-                >
+                <div key={item.label} className="rounded-3xl border border-white/10 bg-slate-950/35 p-4 shadow-xl shadow-black/10 backdrop-blur-xl">
                   <dt className="text-2xl font-semibold text-white">{item.value}</dt>
                   <dd className="mt-1 text-sm leading-6 text-slate-300">{item.label}</dd>
                 </div>
@@ -200,87 +318,7 @@ export default function HeroSlider() {
             </dl>
           </div>
 
-          <div className="relative min-h-[420px] overflow-visible sm:min-h-[520px] lg:min-h-[640px]">
-            <div className="absolute left-2 top-8 h-64 w-64 rounded-full bg-sky-400/18 blur-3xl motion-safe:animate-pulse sm:left-4 sm:h-72 sm:w-72" />
-            <div className="absolute right-2 top-24 h-56 w-56 rounded-full bg-blue-500/18 blur-3xl motion-safe:animate-pulse motion-safe:[animation-delay:1s] sm:right-4 sm:h-64 sm:w-64" />
-
-            <div className="relative h-full min-h-[420px] overflow-visible sm:min-h-[520px] lg:min-h-[640px]">
-              {stackedSlides.map(({ slide, offset }) => {
-                const isActiveCard = offset === 0;
-
-                return (
-                  <article
-                    key={slide.id}
-                    className={`absolute overflow-hidden rounded-[30px] border border-white/14 bg-white/10 shadow-[0_24px_70px_rgba(8,15,35,0.26)] backdrop-blur-md transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] ${stackCardLayouts[offset]}`}
-                    aria-hidden={!isActiveCard}
-                  >
-                    <div className="absolute inset-0">
-                      <Image
-                        src={slide.image}
-                        alt={slide.imageAlt}
-                        fill
-                        priority={offset === 0}
-                        quality={95}
-                        sizes={isActiveCard ? "(min-width: 1280px) 432px, (min-width: 1024px) 400px, (min-width: 640px) 344px, 74vw" : "(min-width: 1280px) 176px, (min-width: 1024px) 168px, 140px"}
-                        className={`object-cover ${slide.positionClass}`}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/48 via-slate-950/8 to-white/8" />
-                    </div>
-
-                    <div className="absolute inset-0 border border-white/10 rounded-[30px]" />
-
-                    <div className="absolute inset-x-3 bottom-3 sm:inset-x-4 sm:bottom-4">
-                      <div className={`inline-flex max-w-full items-center rounded-full border border-white/10 bg-slate-950/42 px-4 py-2 backdrop-blur-xl ${isActiveCard ? "" : "px-3 py-1.5"}`}>
-                        <p className={`truncate font-semibold text-white ${isActiveCard ? "text-base sm:text-lg" : "text-sm"}`}>
-                          {slide.title}
-                        </p>
-                      </div>
-                    </div>
-                  </article>
-                );
-              })}
-            </div>
-
-            <div className="mt-5 flex items-center justify-between gap-4">
-              <button
-                type="button"
-                onClick={goToPrevious}
-                aria-label="Previous slide"
-                className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/8 text-white transition hover:bg-white/12 focus:outline-none focus:ring-2 focus:ring-sky-400"
-              >
-                <ChevronLeft aria-hidden="true" className="h-5 w-5" />
-              </button>
-
-              <div className="flex items-center gap-2" role="tablist" aria-label="Hero slides">
-                {slides.map((slide, index) => {
-                  const isActive = index === activeIndex;
-
-                  return (
-                    <button
-                      key={slide.id}
-                      type="button"
-                      role="tab"
-                      aria-selected={isActive}
-                      aria-label={`Go to ${slide.title}`}
-                      onClick={() => goToSlide(index)}
-                      className={`h-2.5 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-sky-400 ${
-                        isActive ? "w-10 bg-sky-400" : "w-2.5 bg-white/30 hover:bg-white/50"
-                      }`}
-                    />
-                  );
-                })}
-              </div>
-
-              <button
-                type="button"
-                onClick={goToNext}
-                aria-label="Next slide"
-                className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-white/8 text-white transition hover:bg-white/12 focus:outline-none focus:ring-2 focus:ring-sky-400"
-              >
-                <ChevronRight aria-hidden="true" className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
+          <div className="relative">{sliderPanel}</div>
         </div>
       </div>
     </section>

@@ -10,13 +10,12 @@ const RouteMapDynamic = dynamic(() => import("./route-map"), {
 });
 
 export type RouteData = {
-  polyline?: string;
-  detailedPolylines?: string[];
-  legs?: Array<{
-    start_location: { lat: number; lng: number };
-    end_location: { lat: number; lng: number };
+  stops: Array<{
+    name: string;
+    description?: string;
+    coordinates: { lat: number; lng: number };
+    stopNumber: number;
   }>;
-  singleMarker?: { lat: number; lng: number };
 };
 
 export interface RouteMapClientProps {
